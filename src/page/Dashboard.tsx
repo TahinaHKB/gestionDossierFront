@@ -28,6 +28,7 @@ function Dashboard() {
     bon_caisse: "",
     mandat_paiement: "",
   });
+  const [editingDossier, setEditingDossier] = useState<Dossier | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -109,6 +110,24 @@ function Dashboard() {
     }
   };
 
+  const handleSaveEdit = async () => {
+    if (!editingDossier) return;
+    try {
+      const response = await API.put(
+        `/api/dossiers/${editingDossier.numero}/`,
+        editingDossier
+      );
+      setDossiers((prev) =>
+        prev.map((d) =>
+          d.numero === editingDossier.numero ? response.data : d
+        )
+      );
+      setEditingDossier(null);
+    } catch (error) {
+      console.error("Erreur modification dossier:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-blue-500">
       {/* Header */}
@@ -165,7 +184,7 @@ function Dashboard() {
             </div>
 
             <div className="flex flex-col">
-              <label className="mb-1 text-gray-600 font-medium">Dosdef</label>
+              <label className="mb-1 text-gray-600 font-medium">Def</label>
               <input
                 placeholder="Dosdef"
                 value={newDossier.dosdef}
@@ -177,7 +196,7 @@ function Dashboard() {
             </div>
 
             <div className="flex flex-col">
-              <label className="mb-1 text-gray-600 font-medium">TEF</label>
+              <label className="mb-1 text-gray-600 font-medium">Tef</label>
               <input
                 placeholder="TEF"
                 value={newDossier.tef}
@@ -256,54 +275,186 @@ function Dashboard() {
             key={dossier.numero}
             className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-xl transition"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-800">
-                {dossier.numero}
-              </h2>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  dossier.statut === "termine"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-yellow-100 text-yellow-700"
-                }`}
-              >
-                {dossier.statut === "termine" ? "Terminé" : "En attente"}
-              </span>
-            </div>
+            {editingDossier?.numero === dossier.numero ? (
+              <>
+                {/* 🔹 Mode édition */}
+                <div className="space-y-4">
+                  {/* Type */}
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-sm font-semibold text-gray-700">
+                      Type de dossier
+                    </label>
+                    <input
+                      type="text"
+                      // placeholder="Ex: Facture, Contrat..."
+                      className="p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                      value={editingDossier.dostype}
+                      onChange={(e) =>
+                        setEditingDossier({
+                          ...editingDossier,
+                          dostype: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
 
-            <div className="mb-2">
-              <span className="font-semibold text-gray-600">Type: </span>
-              <span className="text-gray-800">{dossier.dostype ? dossier.dostype : "aucun"}</span>
-            </div>
-            <div className="mb-2">
-              <span className="font-semibold text-gray-600">Responsable: </span>
-              <span className="text-gray-800">{dossier.responsable}</span>
-            </div>
+                  {/* Dosdef */}
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-sm font-semibold text-gray-700">
+                      Def
+                    </label>
+                    <input
+                      type="text"
+                      // placeholder="Ex: Définition du dossier"
+                      className="p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                      value={editingDossier.dosdef}
+                      onChange={(e) =>
+                        setEditingDossier({
+                          ...editingDossier,
+                          dosdef: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
 
-            <div className="flex flex-wrap gap-2 mt-4">
-              <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                Dosdef: {dossier.dosdef || "aucun"}
-              </span>
-              <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                TEF: {dossier.tef || "aucun"}
-              </span>
-              <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                Bon caisse: {dossier.bon_caisse || "aucun"}
-              </span>
-              <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                Mandat: {dossier.mandat_paiement || "aucun"}
-              </span>
-            </div>
+                  {/* TEF */}
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-sm font-semibold text-gray-700">
+                      Tef
+                    </label>
+                    <input
+                      type="text"
+                      // placeholder="Ex: Code TEF"
+                      className="p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                      value={editingDossier.tef}
+                      onChange={(e) =>
+                        setEditingDossier({
+                          ...editingDossier,
+                          tef: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
 
-            {/* <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
-              Voir détails
-            </button> */}
-            <button
-              onClick={() => handleDeleteDossier(dossier.numero)}
-              className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
-            >
-              Supprimer
-            </button>
+                  {/* Bon caisse */}
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-sm font-semibold text-gray-700">
+                      Bon de caisse
+                    </label>
+                    <input
+                      type="text"
+                      // placeholder="Ex: Référence bon caisse"
+                      className="p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                      value={editingDossier.bon_caisse}
+                      onChange={(e) =>
+                        setEditingDossier({
+                          ...editingDossier,
+                          bon_caisse: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+
+                  {/* Mandat paiement */}
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-sm font-semibold text-gray-700">
+                      Mandat de paiement
+                    </label>
+                    <input
+                      type="text"
+                      // placeholder="Ex: Référence mandat"
+                      className="p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                      value={editingDossier.mandat_paiement}
+                      onChange={(e) =>
+                        setEditingDossier({
+                          ...editingDossier,
+                          mandat_paiement: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleSaveEdit}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2"
+                >
+                  Sauvegarder
+                </button>
+                <button
+                  onClick={() => setEditingDossier(null)}
+                  className="bg-gray-400 text-white px-4 py-2 rounded-lg"
+                >
+                  Annuler
+                </button>
+              </>
+            ) : (
+              <>
+                {/* 🔹 Mode normal */}
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-gray-800">
+                    {dossier.numero}
+                  </h2>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      dossier.statut === "termine"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {dossier.statut === "termine" ? "Terminé" : "En attente"}
+                  </span>
+                </div>
+
+                <div className="mb-2">
+                  <span className="font-semibold text-gray-600">Type: </span>
+                  <span className="text-gray-800">
+                    {dossier.dostype || "aucun"}
+                  </span>
+                </div>
+
+                <div className="mb-2">
+                  <span className="font-semibold text-gray-600">
+                    Responsable:{" "}
+                  </span>
+                  <span className="text-gray-800">{dossier.responsable}</span>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-4">
+                  <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                    Dosdef: {dossier.dosdef || "aucun"}
+                  </span>
+                  <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                    TEF: {dossier.tef || "aucun"}
+                  </span>
+                  <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                    Bon caisse: {dossier.bon_caisse || "aucun"}
+                  </span>
+                  <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                    Mandat: {dossier.mandat_paiement || "aucun"}
+                  </span>
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                  {username == dossier.responsable && (
+                    <>
+                      <button
+                        onClick={() => setEditingDossier(dossier)}
+                        className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        onClick={() => handleDeleteDossier(dossier.numero)}
+                        className="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                      >
+                        Supprimer
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
