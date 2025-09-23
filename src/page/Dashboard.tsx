@@ -428,10 +428,10 @@ function Dashboard() {
 
                 <div className="flex flex-wrap gap-2 mt-4">
                   <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                    Dosdef: {dossier.dosdef || "aucun"}
+                    Def: {dossier.dosdef || "aucun"}
                   </span>
                   <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                    TEF: {dossier.tef || "aucun"}
+                    Tef: {dossier.tef || "aucun"}
                   </span>
                   <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                     Bon caisse: {dossier.bon_caisse || "aucun"}
