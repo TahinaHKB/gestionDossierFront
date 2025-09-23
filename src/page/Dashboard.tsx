@@ -113,6 +113,12 @@ function Dashboard() {
   const handleSaveEdit = async () => {
     if (!editingDossier) return;
     try {
+      const allFilled = Object.values(editingDossier).every(
+        (value) => String(value).trim() !== ""
+      );
+
+      // Définit le statut selon la règle
+      editingDossier.statut = allFilled ? "termine" : "en_attente";
       const response = await API.put(
         `/api/dossiers/${editingDossier.numero}/`,
         editingDossier
