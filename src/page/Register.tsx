@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { register } from "../component/auth";
 import { useNavigate } from "react-router-dom";
+import LoadingComment from "../component/LoadingComment";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -38,12 +40,16 @@ export default function RegisterPage() {
           />
         </div>
 
-        <button
+        {loading ? (
+              <LoadingComment msg="Envoie de la publication..." />
+            ) : (
+              <button
           onClick={handleRegister}
           className="w-full py-3 mt-4 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition duration-300"
         >
           S'inscrire
         </button>
+            )}
 
         <p className="text-sm text-center text-gray-500">
           Déjà inscrit ?{" "}
@@ -58,3 +64,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+
