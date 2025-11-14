@@ -43,7 +43,7 @@ export default function RegisterPage() {
         </div>
 
         {loading ? (
-              <LoadingComment msg="Envoie de la publication..." />
+              <LoadingComment msg="Création du compte..." />
             ) : (
               <button
           onClick={handleRegister}
@@ -66,5 +66,6 @@ export default function RegisterPage() {
     </div>
   );
 }
+
 
 
