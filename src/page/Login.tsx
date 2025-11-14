@@ -1,28 +1,36 @@
 import { useState } from "react";
 import { login } from "../component/auth";
 import { useNavigate } from "react-router-dom";
+import LoadingComment from "../component/LoadingComment";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setLoading(true);
     try {
       await login(username, password);
       navigate("/");
     } catch (err) {
       alert(err);
     }
+    setLoading(false);
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl">
-        <h2 className="text-3xl font-bold text-center text-gray-800">
-          Se connecter
-        </h2>
+        {loadPubSend ? (
+              <LoadingComment msg="Connexion..." />
+            ) : (
+              <h2 className="text-3xl font-bold text-center text-gray-800">
+                Se connecter
+              </h2>
+            )}
 
         <div className="space-y-4">
           <input
@@ -62,3 +70,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
