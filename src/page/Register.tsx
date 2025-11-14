@@ -10,12 +10,14 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    setLoading(true);
     try {
       await register(username, password); // uniquement username + password
       navigate("/login");
     } catch (err) {
       alert(err);
     }
+    setLoading(false);
   };
 
   return (
@@ -64,4 +66,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
 
