@@ -24,13 +24,9 @@ function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl">
-        {loading ? (
-              <LoadingComment msg="Connexion..." />
-            ) : (
-              <h2 className="text-3xl font-bold text-center text-gray-800">
+        <h2 className="text-3xl font-bold text-center text-gray-800">
                 Se connecter
               </h2>
-            )}
 
         <div className="space-y-4">
           <input
@@ -47,12 +43,17 @@ function LoginPage() {
           />
         </div>
 
-        <button
+        {loading ? (
+              <LoadingComment msg="Connexion..." />
+            ) : (
+              <button
           onClick={handleLogin}
           className="w-full py-3 mt-4 font-semibold text-white bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300"
         >
           Se connecter
         </button>
+            )}
+        
 
         <p className="text-sm text-center text-gray-500 mt-4">
           Pas encore de compte ?
@@ -70,5 +71,6 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
 
 
